@@ -90,3 +90,31 @@ def test_update_readme_replaces_between_markers():
 def test_update_readme_missing_markers_raises():
     with pytest.raises(ValueError):
         pu.update_readme("no markers here", "- NEW")
+
+
+def _seed_readme(tmp_path):
+    p = tmp_path / "README.md"
+    p.write_text("top\n<!--PULSE:START-->\nOLD\n<!--PULSE:END-->\nbottom\n",
+                 encoding="utf-8")
+    return p
+
+
+def test_main_writes_updated_line(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    _seed_readme(tmp_path)
+    pu.main(fetch=lambda url: DEVOPS_README_WITH_CVES)
+    out = (tmp_path / "README.md").read_text(encoding="utf-8")
+    assert "latest 2026-07-03: 2 new high/critical CVEs" in out
+    assert "OLD" not in out
+
+
+def test_main_skips_on_fetch_error_without_writing(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    p = _seed_readme(tmp_path)
+    before = p.read_text(encoding="utf-8")
+
+    def boom(url):
+        raise RuntimeError("network down")
+
+    pu.main(fetch=boom)  # must not raise
+    assert p.read_text(encoding="utf-8") == before  # unchanged
