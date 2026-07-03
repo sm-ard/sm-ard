@@ -54,20 +54,27 @@ def test_extract_pulse_missing_date_raises():
         pu.extract_pulse("no latest section here")
 
 
+def test_extract_pulse_security_last_section():
+    md = "## Latest — 2026-07-05\n\n## Security (CVEs)\n\n- **[CVE-2026-9](u)** `HIGH` — x\n"
+    date, count = pu.extract_pulse(md)
+    assert date == "2026-07-05"
+    assert count == 1
+
+
 def test_build_line_plural():
     line = pu.build_line("2026-07-03", 2)
-    assert "latest 2026-07-03: 2 new critical CVEs" in line
+    assert "latest 2026-07-03: 2 new high/critical CVEs" in line
     assert "devops-pulse" in line
     assert line.startswith("- ")
 
 
 def test_build_line_singular():
-    assert "1 new critical CVE" in pu.build_line("2026-07-03", 1)
-    assert "1 new critical CVEs" not in pu.build_line("2026-07-03", 1)
+    assert "1 new high/critical CVE" in pu.build_line("2026-07-03", 1)
+    assert "1 new high/critical CVEs" not in pu.build_line("2026-07-03", 1)
 
 
 def test_build_line_zero():
-    assert "no new critical CVEs" in pu.build_line("2026-07-03", 0)
+    assert "no new high/critical CVEs" in pu.build_line("2026-07-03", 0)
 
 
 def test_update_readme_replaces_between_markers():
