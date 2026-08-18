@@ -8,7 +8,7 @@ Everything ships in public.
 **Now**
 
 <!--PULSE:START-->
-- **[devops-pulse](https://github.com/sm-ard/devops-pulse)** — automated daily DevOps digest (CVEs · releases · news) · latest 2026-08-17: no new high/critical CVEs · live
+- **[devops-pulse](https://github.com/sm-ard/devops-pulse)** — automated daily DevOps digest (CVEs · releases · news) · latest 2026-08-18: 3 new high/critical CVEs · live
 <!--PULSE:END-->
 
 **Building next**
